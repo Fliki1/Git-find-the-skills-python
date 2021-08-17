@@ -1,16 +1,21 @@
-# This is a sample Python script.
+import configparser
 
-# Press Maiusc+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+CONFIG = configparser.RawConfigParser()
+CONFIG.read('ConfigFile.properties')
 
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-d
-" ci riusciranno i nostri eroi?"
+    print(CONFIG.get('DatabaseSection', 'database.dbname'))
+
+def validatePropertiesSkills():
+    """ Valida i campi di ConfigFile.properties (non vuoti) """
+    # for e in CONFIG. check if campi non vuoti
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    CONFIG.read('ConfigFile.properties')
+    if validatePropertiesSkills():
+        pass
