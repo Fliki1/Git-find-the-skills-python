@@ -1,21 +1,37 @@
 import configparser
+import sys
+from src import DevelopersVisitor
 
 CONFIG = configparser.RawConfigParser()
 CONFIG.read('ConfigFile.properties')
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-    print(CONFIG.get('DatabaseSection', 'database.dbname'))
-
 def validatePropertiesSkills():
-    """ Valida i campi di ConfigFile.properties (non vuoti) """
-    # for e in CONFIG. check if campi non vuoti
+    """ Valida i campi primari di ConfigFile.properties (non vuoti) [✓]"""
+    isValid = True
+    for section in ["RepositorySection", "SkillsSection", "OutputSection"]:
+        for key in CONFIG[section]:
+            if CONFIG.get(section, key) is None or CONFIG.get(section, key) == "":  # non ci sono campi
+                isValid = False
+                print("Please insert a valid value for " + key + " in Config.properties file.")
+            elif len(CONFIG.get(section, key).split(';')) == 0:                     # non ci sono campi
+                isValid = False
+                print("Please insert a valid value for " + key + " in Config.properties file.")
+    return isValid
 
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-    CONFIG.read('ConfigFile.properties')
-    if validatePropertiesSkills():
-        pass
+    try:
+        CONFIG.read('ConfigFile.properties')
+    except ValueError:
+        print(ValueError)
+
+    if validatePropertiesSkills() == False:     # ConfigFile.properties: wrong or empty fields
+        sys.exit(0)
+
+    #TODO: start the metric
+    p1 = DevelopersVisitor.DevelopersVisitor("John", 36)
+    p1.myfunc()
+    print(p1.x)
+    print("ciao a te")
+    del p1
