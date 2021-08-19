@@ -68,5 +68,18 @@ directory.
 sono presenti all'interno del file properties.
 Se qualunque di questi campi è vuoto l'applicazione si ferma.
 
-Successivamenta a questo controllo si eseguono...
+Successivamenta a questo controllo si istanzia [DeveloperVisitor](DeveloperVisitor)
 
+### 3. DevelopersVisitor
+DevelopersVisitor classe che gestisce la metrica, prende come input
+un riferimento a ConfigFile.properties dal quale ne ricava i parametri settati.
+
+Salva in:
+- **CONFIG**: un riferimento al ConfigFile
+- **developers**: un dizionario chiave valore (str, Developer)
+- **fileExstensions**: un dizionario chiave valore (str, str[])
+dei campi backend-frontend-writer-undefined separati da `;` in lowercase
+> {'backend': ['sh', 'py', 'c', 'cpp', 'go'], 'frontend': ['css', 'scss', 'html', 'ts', 'ui', 'kt'], 'writer': ['pdf', 'md', 'txt', 'tex'], 'undefined': ['php', 'java', 'js']}
+- **java_fe**: list string delle librerie specificate nel ConfigFile separate da `;`
+in lowercase
+> ['javax.swing', 'java.awt', 'com.lowagie', 'org.xml', 'android.view']

@@ -3,7 +3,7 @@ import sys
 from src import DevelopersVisitor
 
 CONFIG = configparser.RawConfigParser()
-CONFIG.read('ConfigFile.properties')
+#CONFIG.read('ConfigFile.properties')
 
 
 def validatePropertiesSkills():
@@ -30,8 +30,8 @@ if __name__ == '__main__':
         sys.exit(0)
 
     #TODO: start the metric
-    p1 = DevelopersVisitor.DevelopersVisitor("John", 36)
+    p1 = DevelopersVisitor.DevelopersVisitor(CONFIG)
     p1.myfunc()
-    print(p1.x)
-    print("ciao a te")
+    #p1.checkIfFileHasExtension("testaciao", ["tavolo","sedia","comodinociao", "ciao"])
+    print("this is the end")
     del p1
