@@ -1,0 +1,79 @@
+class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
+    name = None
+    email = None
+    commit = None
+
+    extraCategory = None
+
+    id = None
+    username = None
+    avatar_url = None
+    website = None
+    location = None
+    bio = None
+    created_at = None
+
+    devPoints = None
+
+    # https://api.github.com/users/fliki1
+    def __init__(self, name: str, email: str):
+        self.name = name
+        self.email = email
+        self.commit = 0
+        self.devPoints = {}  # HashMap<String, Integer>
+
+        self.setId()
+        self.setUsername()
+        self.setAvatar_url()
+        self.setWebsite()
+        self.setLocation()
+        self.setBio()
+        self.setCreated_at()
+
+        extraCategory = []  # String list
+
+        self.devPoints["frontend"] = 0
+        self.devPoints["writer"] = 0
+        self.devPoints["backend"] = 0
+
+    def setId(self, id=None):
+        self.id = id
+
+    def getId(self):
+        return self.id
+
+    def setUsername(self, username=None):
+        self.username = username
+
+    def getUsername(self):
+        return self.username
+
+    def setAvatar_url(self, avatar_url=None):
+        self.avatar_url = avatar_url
+
+    def getAvatar_url(self):
+        return self.avatar_url
+
+    def setWebsite(self, website=None):
+        self.website = website
+
+    def getWebsite(self):
+        return self.website
+
+    def setLocation(self, location=None):
+        self.location = location
+
+    def getLocation(self):
+        return self.location
+
+    def setBio(self, bio=None):
+        self.bio = bio
+
+    def getBio(self):
+        return self.bio
+
+    def setCreated_at(self, created_at=None):
+        self.created_at = created_at
+
+    def getCreated_at(self):
+        return self.created_at

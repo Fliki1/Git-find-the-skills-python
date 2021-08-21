@@ -1,5 +1,8 @@
 import configparser
 import re
+from src import Developer
+from pydriller import Repository
+
 
 class DevelopersVisitor:
 
@@ -42,9 +45,43 @@ class DevelopersVisitor:
 
     def getOnlyAdditions(self):
         """ lista string di soli ADD dalla mod corrente """
+        # da gestire con il sistema corrente
+
+
+    def getImportsJava(self, lines: []):
+        """ gestione degli import Java type """
+        imports = []
+        for line in lines:
+            if line.startwith("import") and len(line.split(".")) > 1:    # import java.awt.BorderLayout;
+                imports.append((line.split(".")[0].replace("import", "") + "." + line.split(".")[1]).replace(";+$", "").strip())
+        return imports  # NON è ordinato come in java credo
+
+    """ https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Statements/import
+        import defaultExport from "module-name";
+        import * as name from "module-name";
+        import { export1 } from "module-name";
+        import { export1 as alias1 } from "module-name";
+        import { export1 , export2 } from "module-name";
+        import { export1 , export2 as alias2 , [...] } from "module-name";
+        import defaultExport, { export1 [ , [...] ] } from "module-name";
+        import defaultExport, * as name from "module-name";
+        import "module-name";
+        var promise = import("module-name");
+    """
 
     def myfunc(self):
         print(self.CONFIG)
         print(self.developers)
         print(self.fileExstensions)
         print(self.java_fe)
+
+    def process(self, url):
+
+        for commit in Repository(path_to_repo=url).traverse_commits():
+            # Check if the dic contains already the developer (by name), else create a new instance of Developer.
+            contains = commit.author.name in self.developers.keys()
+            if not contains:
+                newDev = Developer.Developer(commit.author.name, commit.author.email)
+                #print(newDev.getUsername())
+                # new developer
+            print(contains)

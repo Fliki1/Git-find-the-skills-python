@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     #TODO: start the metric
     p1 = DevelopersVisitor.DevelopersVisitor(CONFIG)
-    p1.myfunc()
+    #p1.myfunc()
     #p1.checkIfFileHasExtension("testaciao", ["tavolo","sedia","comodinociao", "ciao"])
+    p1.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
     print("this is the end")
     del p1
