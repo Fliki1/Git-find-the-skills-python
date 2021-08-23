@@ -1,3 +1,6 @@
+import configparser
+
+
 class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
     name = None
     email = None
@@ -30,11 +33,29 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
         self.setBio()
         self.setCreated_at()
 
-        extraCategory = []  # String list
+        self.extraCategory = []  # String list
 
         self.devPoints["frontend"] = 0
         self.devPoints["writer"] = 0
         self.devPoints["backend"] = 0
+
+
+    def initExtraCategory(self, CONFIG: configparser):
+        """ salvo in devPoints e extraCategory le categorie extra """
+        arrayProps = ["repository", "backend", "frontend", "writer", "undefined", "java_fe", "export_as"]
+        if "repository" not in arrayProps:
+            self.devPoints["repository"] = 0
+            self.extraCategory.append("repository")
+        for key in CONFIG["SkillsSection"]:
+            if key not in arrayProps:
+                self.devPoints[key] = 0
+                self.extraCategory.append(key)
+
+
+    def editPoints(self, key: str, value: int):
+        self.devPoints[key] = self.devPoints.get(key) + value
+        return self.devPoints.get(key)
+
 
     def setId(self, id=None):
         self.id = id

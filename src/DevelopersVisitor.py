@@ -34,7 +34,7 @@ class DevelopersVisitor:
         """ This method matches the regex pattern in the string with the optional flag.
         It returns true if a match is found in the string otherwise it returns false."""
         return re.match(self.HTML_PATTERN, text)
-        """ This method returns the match object if there is a match found in the string. """
+        # Oppure: This method returns the match object if there is a match found in the string.
         #re.search(regex, text)
 
 
@@ -69,19 +69,27 @@ class DevelopersVisitor:
         var promise = import("module-name");
     """
 
-    def myfunc(self):
-        print(self.CONFIG)
-        print(self.developers)
-        print(self.fileExstensions)
-        print(self.java_fe)
+    def updatePoint(self, dev: Developer, mod):
+        for i in self.fileExstensions.keys():
+            if i != "undefined":
+                if self.checkIfFileHasExtension(mod.filename, self.fileExstensions.get(i)):
+                    dev.editPoints(i, (1 if mod.added_lines == 0 else mod.added_lines))
+            else:
+                pass
+
+
 
     def process(self, url):
-
+        """processo di lavoro"""
         for commit in Repository(path_to_repo=url).traverse_commits():
             # Check if the dic contains already the developer (by name), else create a new instance of Developer.
             contains = commit.author.name in self.developers.keys()
             if not contains:
                 newDev = Developer.Developer(commit.author.name, commit.author.email)
-                #print(newDev.getUsername())
-                # new developer
-            print(contains)
+                newDev.initExtraCategory(self.CONFIG)
+                self.developers[commit.author.name] = newDev
+            dev = self.developers.get(commit.author.name)
+            dev.commit +=1
+
+            for mod in commit.modified_files:
+                self.updatePoint(dev, mod)
