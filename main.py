@@ -19,6 +19,20 @@ def validatePropertiesSkills():
                 print("Please insert a valid value for " + key + " in Config.properties file.")
     return isValid
 
+def isRemote(url:str):
+    if url.startswith("www") or url.startswith("http"):
+        return True
+    return False
+
+def getSocialName(urlOrPath: str):
+    if isRemote(urlOrPath):
+        urlNoProtocol = urlOrPath.replace("www", "").replace("https://", "").replace("http://","")
+        splitted = urlNoProtocol.split("\\.")
+        if len(splitted) > 0:
+            return splitted[0].strip()
+    else:
+        pass
+
 
 if __name__ == '__main__':
     try:
@@ -30,9 +44,14 @@ if __name__ == '__main__':
         sys.exit(0)
 
     #TODO: start the metric
-    p1 = DevelopersVisitor.DevelopersVisitor(CONFIG)
+    analyzer = DevelopersVisitor.DevelopersVisitor(CONFIG)
+    urlOrPath = CONFIG["RepositorySection"]["repository"]
+    analyzer.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
+
+    socialname = getSocialName(urlOrPath)
+
     #p1.myfunc()
     #p1.checkIfFileHasExtension("testaciao", ["tavolo","sedia","comodinociao", "ciao"])
-    p1.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
+
     print("this is the end")
-    del p1
+    del analyzer

@@ -43,9 +43,14 @@ class DevelopersVisitor:
         return [string.strip().lower() for string in strings]
 
 
-    def getOnlyAdditions(self):
+    def getOnlyAdditions(self, mod):
         """ lista string di soli ADD dalla mod corrente """
-        # da gestire con il sistema corrente
+        lines = mod.diff.split("\n")
+        ret = []
+        for addition in lines:
+            if not addition.startswith("++") and addition.startswith("+"):
+                ret.append( addition.replace("+", "").replace("\n"," ").strip() )
+        return ret
 
 
     def getImportsJava(self, lines: []):
@@ -75,13 +80,25 @@ class DevelopersVisitor:
                 if self.checkIfFileHasExtension(mod.filename, self.fileExstensions.get(i)):
                     dev.editPoints(i, (1 if mod.added_lines == 0 else mod.added_lines))
             else:
-                pass
+                for ext in self.fileExstensions.get(i):
+                    if mod.filename.endswith(ext):
+                        if ext == "php":
+                            if self.hasHTMLTags(mod.source_code):
+                                dev.editPoints("frontend", (1 if mod.added_lines == 0 else mod.added_lines))
+                            else:
+                                dev.editPoints("backend", (1 if mod.added_lines == 0 else mod.added_lines))
+                        elif ext == "java" or ext == "js":
+                            imports = []
+                            additions = self.getOnlyAdditions(mod)
+                            # webscraper
+
+
 
 
 
     def process(self, url):
-        """processo di lavoro"""
-        for commit in Repository(path_to_repo=url).traverse_commits():
+        """ processo di lavoro """
+        for commit in Repository(path_to_repo=url, only_no_merge=True).traverse_commits():
             # Check if the dic contains already the developer (by name), else create a new instance of Developer.
             contains = commit.author.name in self.developers.keys()
             if not contains:
