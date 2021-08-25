@@ -1,5 +1,6 @@
 import configparser
 import sys
+import os
 from src import DevelopersVisitor
 
 CONFIG = configparser.RawConfigParser()
@@ -31,7 +32,24 @@ def getSocialName(urlOrPath: str):
         if len(splitted) > 0:
             return splitted[0].strip()
     else:
-        pass
+        url = os.path.expanduser(urlOrPath+"/.git/config")
+        try:
+            f = open(url, "r")
+            for text in f.readlines():
+                if text.strip().startswith("url = "):
+                    urlNoProtocol = text.replace("url", "").replace("=", "").replace("git@", "").replace("www", "").replace("https://", "").replace("http://", "")
+                    splitted = urlNoProtocol.split("\\.")
+                    if len(splitted) > 0:
+                        return splitted[0].strip()
+        except ValueError:
+            print(ValueError)
+        finally:
+            try:
+                f.close()
+            except ValueError:
+                print(ValueError)
+
+
 
 
 if __name__ == '__main__':
@@ -46,9 +64,34 @@ if __name__ == '__main__':
     #TODO: start the metric
     analyzer = DevelopersVisitor.DevelopersVisitor(CONFIG)
     urlOrPath = CONFIG["RepositorySection"]["repository"]
-    analyzer.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
+    analyzer.process(urlOrPath)
+    #analyzer.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
 
     socialname = getSocialName(urlOrPath)
+
+    orginalDev = analyzer.getDevelopers()
+
+    # Removing duplicate users. Primary key = email
+    developers = {}
+    for i in orginalDev.values():
+        dev = None
+        for j in developers.values():
+            if j.email == i.email:
+                dev = j
+        if dev == None:
+            developers[i.name] = i
+        else:
+            print("Merge points/commit for: " + i.name + " , " + dev.name )
+            for cat in dev.getKeyPoints():
+                dev.editPoints(cat, i.getPoints(cat))
+            dev.commit += i.commit
+
+    print("Start scraping social info for: " + str(len(developers)) + " developers.")
+    max_commit = 0
+    for i in developers.values():
+        if i.commit > max_commit:
+            max_commit = i.commit
+        i.initSocialInfo(socialname)
 
     #p1.myfunc()
     #p1.checkIfFileHasExtension("testaciao", ["tavolo","sedia","comodinociao", "ciao"])

@@ -56,6 +56,15 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
         self.devPoints[key] = self.devPoints.get(key) + value
         return self.devPoints.get(key)
 
+    def getKeyPoints(self):
+        return self.devPoints.keys()
+
+    def getPoints(self, key:str):
+        return self.devPoints.get(key)
+
+    def initSocialInfo(self, socialname:str):
+        pass
+
 
     def setId(self, id=None):
         self.id = id
