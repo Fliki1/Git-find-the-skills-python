@@ -28,7 +28,8 @@ def isRemote(url:str):
 def getSocialName(urlOrPath: str):
     if isRemote(urlOrPath):
         urlNoProtocol = urlOrPath.replace("www", "").replace("https://", "").replace("http://","")
-        splitted = urlNoProtocol.split("\\.")
+        replace = urlNoProtocol.replace(".", "/")   # per splittare anche github.com/... --> github/com/...
+        splitted = replace.split("/")
         if len(splitted) > 0:
             return splitted[0].strip()
     else:
@@ -38,7 +39,8 @@ def getSocialName(urlOrPath: str):
             for text in f.readlines():
                 if text.strip().startswith("url = "):
                     urlNoProtocol = text.replace("url", "").replace("=", "").replace("git@", "").replace("www", "").replace("https://", "").replace("http://", "")
-                    splitted = urlNoProtocol.split("\\.")
+                    replace = urlNoProtocol.replace(".", "/")  # per splittare anche github.com/... --> github/com/...
+                    splitted = replace.split("/")
                     if len(splitted) > 0:
                         return splitted[0].strip()
         except ValueError:
@@ -68,7 +70,7 @@ if __name__ == '__main__':
     #analyzer.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
 
     socialname = getSocialName(urlOrPath)
-
+    print("socialname", socialname)
     orginalDev = analyzer.getDevelopers()
 
     # Removing duplicate users. Primary key = email

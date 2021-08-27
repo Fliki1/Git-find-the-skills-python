@@ -1,5 +1,5 @@
 import configparser
-
+from src import GitSocialScraper
 
 class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
     name = None
@@ -63,7 +63,20 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
         return self.devPoints.get(key)
 
     def initSocialInfo(self, socialname:str):
-        pass
+        socialscaper = GitSocialScraper.GitSocialScraper(socialname)
+        try:
+            socialinfo = socialscaper.getInfo(self.email)
+            print(self.email)
+            if socialinfo != None:
+                self.setId(socialinfo.get("id"))
+                self.setUsername(socialinfo.get("username"))
+                self.setAvatar_url(socialinfo.get("avatar_url"))
+                self.setWebsite(socialinfo.get("website"))
+                self.setLocation(socialinfo.get("location"))
+                self.setBio(socialinfo.get("bio"))
+                self.setCreated_at(socialinfo.get("created_at"))
+        except ValueError:
+            print(ValueError)
 
 
     def setId(self, id=None):
