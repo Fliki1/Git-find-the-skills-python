@@ -26,9 +26,7 @@ class GitSocialScraper:
                     {
                       "total_count": 0,
                       "incomplete_results": false,
-                      "items": [
-                    
-                      ]
+                      "items": [ ]
                     }
                 """
                 # se non funziona provare la condizione user_result['items'] != 0
@@ -49,34 +47,40 @@ class GitSocialScraper:
                         info["bio"] = None if (fullinfo['bio'] == 'null') else fullinfo["bio"]
                         info["created_at"] = fullinfo["created_at"]
                         return info
+                    return None
             except ValueError:
                 print(ValueError)
         elif self.socialname == "bitbucket":
+            """ Anche qui richiede una autorizzazione, possibile gestione della chiamata come sotto
             fullinfo = {}
             try:
                 # 1 - Search user by email
-                fullinfo = self.makeRequest(f"https://api.bitbucket.org/2.0/users/{email}")
-
+                fullinfo = self.makeRequest(f"https://api.bitbucket.org/2.0/user/emails/{email}")
+                                            # anche il formato https://api.bitbucket.org/2.0/user/ + email
                 if fullinfo != None:
                     info = {}
                     info["id"] = fullinfo["account_id"]
                     info["username"] = fullinfo["nickname"]
                     print(info)
-                    #links = fullinfo['links']
-                    #avatarl_url = links['avatar']['href']
-                    #info["avatar_url"] = avatarl_url
+                    links = fullinfo['links']
+                    avatarl_url = links['avatar']['href']
+                    info["avatar_url"] = avatarl_url
 
-                    #info["website"] = None
-                    #info["location"] = None
-                    #info["bio"] = None
-                    #info["created_at"] = fullinfo["created_on"]
-                    #print(info)
-                    #return info
+                    info["website"] = None
+                    info["location"] = None
+                    info["bio"] = None
+                    info["created_at"] = fullinfo["created_on"]
+                    print(info)
+                    return info
+                return None
             except ValueError:
                 print(ValueError)
+            """
+            return None
         elif self.socialname == "gitlab":
-            return None     # auth required for GitLab :(           # Qualcosa del tipo: r = requests.get('https://api.github.com/user', auth=('user', 'pass'))
-        return None                                                                     # r.status_code    terminale = 200
+            return None     # auth required for GitLab :(
+        return None
+
     """ Qualcosa del tipo: 
         r = requests.get('https://api.github.com/user', auth=('user', 'pass'))
         r.status_code    

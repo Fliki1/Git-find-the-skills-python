@@ -69,15 +69,33 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
             print(self.email)
             if socialinfo != None:
                 self.setId(socialinfo.get("id"))
+                print(self.getId())
                 self.setUsername(socialinfo.get("username"))
+                print(self.getUsername())
                 self.setAvatar_url(socialinfo.get("avatar_url"))
+                print(self.getAvatar_url())
                 self.setWebsite(socialinfo.get("website"))
+                print(self.getWebsite())
                 self.setLocation(socialinfo.get("location"))
+                print(self.getLocation())
                 self.setBio(socialinfo.get("bio"))
+                print(self.getBio())
                 self.setCreated_at(socialinfo.get("created_at"))
+                print(self.getCreated_at())
         except ValueError:
             print(ValueError)
 
+    def print(self):
+        print("Name: " + self.name)
+        print("Email: " + self.email)
+
+        total = 0
+        for i in self.devPoints.keys():
+            print("Category: " + i + " Points: " + self.devPoints[i])
+            total += self.devPoints[i]
+        if total != 0:
+            for i in self.devPoints.keys():
+                print("Category: " + i + " Percentage: " + str( round(float(self.devPoints[i]*100/total)) ) + "%")
 
     def setId(self, id=None):
         self.id = id

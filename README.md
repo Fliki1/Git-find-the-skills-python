@@ -14,3 +14,7 @@ You can query the 2.0 API for specific objects using a simple language which res
 
 Fonte:
 https://developer.atlassian.com/bitbucket/api/2/reference/meta/filtering
+
+Vuole una Token API OAuth
+
+Fonte di repository Bitbucket: https://bitbucket.org/repo/all
