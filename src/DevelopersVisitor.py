@@ -81,7 +81,7 @@ class DevelopersVisitor:
                     dev.editPoints(i, (1 if mod.added_lines == 0 else mod.added_lines))
             else:
                 for ext in self.fileExstensions.get(i):
-                    if mod.filename.endswith(ext):
+                    if mod.filename.endswith(ext):  # Modifica effettuata su un tag di studio
                         if ext == "php":
                             if self.hasHTMLTags(mod.source_code):
                                 dev.editPoints("frontend", (1 if mod.added_lines == 0 else mod.added_lines))

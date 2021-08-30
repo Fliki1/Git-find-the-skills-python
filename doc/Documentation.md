@@ -83,3 +83,12 @@ dei campi backend-frontend-writer-undefined separati da `;` in lowercase
 - **java_fe**: list string delle librerie specificate nel ConfigFile separate da `;`
 in lowercase
 > ['javax.swing', 'java.awt', 'com.lowagie', 'org.xml', 'android.view']
+
+### X. WebScraper
+Per la gestione dei package di Java e JavaScript, ci si affida al sito https://www.npmjs.com/package/
+il quale specificando il nome del package ne darà tutte le informazioni utili.
+
+Per leggere il sito: ci si affida a un HTML Parser `BeautifulSoup`.
+
+Viene letto il campo "readme" del sito, se ne contiene la parola: _node.js_, il
+package in questione viene trattato come **backend** altrimenti **frontend**

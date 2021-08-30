@@ -100,7 +100,7 @@ if __name__ == '__main__':
         if i.commit > max_commit:
             max_commit = i.commit
         i.initSocialInfo(socialname)
-        #time.sleep(60)  # GitHub Error: Authenticated requests get a higher rate limit. Check out the documentation for more details...
+        time.sleep(15)  # GitHub Error: Authenticated requests get a higher rate limit. Check out the documentation for more details...
 
     now = datetime.now() #  2021-03-24 16:48:05.591
     timestamp = now.strftime("%m-%d-%Y_%H:%M:%S")
@@ -109,45 +109,55 @@ if __name__ == '__main__':
     if CONFIG["OutputSection"]["export_as"] == "csv":
         try:
             csv_headers = ["Name", "Email", "SocialID", "SocialUsername", "AvatarURL", "WebSite", "Location", "Bio", "CreatedAt", "Commits"]
-            heading = "Name;Email;SocialID;SocialUsername;AvatarURL;WebSite;Location;Bio;CreatedAt;Commits;"
+            #heading = "Name;Email;SocialID;SocialUsername;AvatarURL;WebSite;Location;Bio;CreatedAt;Commits;"
             ciao = list(developers.keys())
             firstDev = developers.get(ciao[0])
             for cat in firstDev.getKeyPoints(): # ogni categoria extra?
-                heading += cat + "%;"
+                csv_headers.append(cat+ "%")
+
+            singleline= {}
 
             with open(filename + ".csv", 'w') as f:
                 # Header del csv
-                writer = csv.DictWriter(f, fieldnames=heading, delimiter=';')
-
+                writer = csv.DictWriter(f, fieldnames=csv_headers)
                 writer.writeheader()
+
                 for i in developers.values():
-                    # riga del csv
+                    # calcolo totale cat lavoro effettuato dal singolo dev: 10% writer, 60% facebook, 30% frontend...
                     total = 0
                     for cat in i.getKeyPoints():
                         total += i.getPoints( cat )
 
-                    singleline = i.name + ";" + i.email + ";" + (
-                        " " if (i.getId() == None) else i.getId() ) + ";" + (
-                        " " if (i.getUsername() == None) else i.getUsername() ) + ";" + (
-                        " " if (i.getAvatar_url() == None) else i.getAvatar_url()) + ";" + (
-                        " " if (i.getWebsite() == None) else i.getWebsite() ) + ";" + (
-                        " " if (i.getLocation() == None) else i.getLocation()) +  ";" + (
-                        " " if (i.getBio() == None) else i.getBio()) + ";" + (
-                        " " if (i.getCreated_at() == None) else i.getCreated_at()) + ";" + str(i.commit) + ";"
+                    # riga del csv
+                    singleline[csv_headers[0]] = i.name  # Name
+                    singleline[csv_headers[1]] = i.email  # Email
+                    singleline[csv_headers[2]] = " " if (i.getId() == None) else i.getId()  # SocialID
+                    singleline[csv_headers[3]] = " " if (i.getUsername() == None) else i.getUsername() # SocialUsername
+                    singleline[csv_headers[4]] = " " if (i.getAvatar_url() == None) else i.getAvatar_url() # AvatarURL
+                    singleline[csv_headers[5]] = " " if (i.getWebsite() == None) else i.getWebsite()  # WebSite
+                    singleline[csv_headers[6]] = " " if (i.getLocation() == None) else i.getLocation()  # Location
+                    singleline[csv_headers[7]] = " " if (i.getBio() == None) else i.getBio()  # Bio
+                    singleline[csv_headers[8]] = " " if (i.getCreated_at() == None) else i.getCreated_at() # CreatedAt
+                    singleline[csv_headers[9]] = i.commit  # Commits
 
-                    for cat in i.getKeyPoints():
-                        singleline += str( round(float(i.getPoints( cat )*100/total)) ) + ";"
+                    print("total: ",total)
+
+                    # Percentuali: frontend%,writer%,backend%,android%,facebook%...
+                    for index, cat in enumerate(i.getKeyPoints()):
+                        if total !=0:
+                            singleline[csv_headers[10 + index]] = round(float(i.getPoints( cat )*100/total))   # cat%
+                        else:   # Errore: che dev non ha nulla di specifico per quelle categorie specificate
+                            singleline[csv_headers[10 + index]] = 0  # 0%
 
                     writer.writerow(singleline)
-            print('csv')
+
+            print('Csv generato')
         except ValueError:
             print(ValueError)
     elif CONFIG["OutputSection"]["export_as"] == "html":
         pass
     else: print("Not valid output provided. Output supported: csv or html")
 
-    #p1.myfunc()
-    #p1.checkIfFileHasExtension("testaciao", ["tavolo","sedia","comodinociao", "ciao"])
 
     print("this is the end")
     del analyzer
