@@ -3,6 +3,7 @@ import sys
 import csv
 import time
 from datetime import datetime
+import json
 import os
 from src import DevelopersVisitor
 
@@ -155,7 +156,60 @@ if __name__ == '__main__':
         except ValueError:
             print(ValueError)
     elif CONFIG["OutputSection"]["export_as"] == "html":
-        pass
+        outputData = [] #JSONArray
+        for i in developers.values():
+            singleDeveloper = {}    # JSONObject
+
+            total = 0
+            for cat in i.getKeyPoints():
+                total += i.getPoints(cat)
+
+            singleDeveloper["name"] = i.name
+            singleDeveloper["email"] = i.email
+            singleDeveloper["id"] = (" " if (i.getId() == None) else i.getId())
+            singleDeveloper["username"] = (" " if (i.getUsername() == None) else i.getUsername())
+            singleDeveloper["avatar_url"] = (" " if (i.getAvatar_url() == None) else i.getAvatar_url())
+            singleDeveloper["website"] = (" " if (i.getWebsite() == None) else i.getWebsite())
+            singleDeveloper["location"] = (" " if (i.getLocation() == None) else i.getLocation())
+            singleDeveloper["bio"] = (" " if (i.getBio() == None) else i.getBio())
+            singleDeveloper["created_at"] = (" " if (i.getCreated_at() == None) else i.getCreated_at())
+            singleDeveloper["commit"] = i.commit
+
+            # commit Star
+            if (i.commit > 1 and i.commit <= (max_commit / 5)):
+                singleDeveloper["commit_star"] = 1
+            elif (i.commit > (max_commit / 5) and i.commit <= (max_commit / 5) * 2):
+                singleDeveloper["commit_star"] = 2
+            elif ( i.commit > ((max_commit / 5) * 2) and i.commit <= (max_commit / 5) * 3 ):
+                singleDeveloper["commit_star"] = 3
+            elif ( i.commit > ((max_commit / 5) * 3) and i.commit <= (max_commit / 5) * 4 ):
+                singleDeveloper["commit_star"] = 4
+            elif ( i.commit > ((max_commit / 5) * 4) ):
+                singleDeveloper["commit_star"] = 5
+
+            skills = {} #JSONArray
+            for cat in i.getKeyPoints():
+                skills[cat] = round(float(i.getPoints(cat)*100/total))
+            singleDeveloper["skills"] = skills
+
+            # conversione JSON
+            jsonSingleDeveloper = json.dumps(singleDeveloper)
+            outputData.append(jsonSingleDeveloper)
+
+        print(outputData)
+        # Save Data
+        try:
+
+            """try (FileWriter file = new FileWriter("html/js/git_data.js")) {
+            file.write("data = " + outputData.toString());
+            file.flush();
+
+            zipFolder(Paths.get("html"), Paths.get("./" + filename + ".zip" ));"""
+
+        except ValueError:
+            print(ValueError)
+
+
     else: print("Not valid output provided. Output supported: csv or html")
 
 
