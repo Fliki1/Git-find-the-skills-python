@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import urllib3
+import urllib.request
 
 class WebScraper:
     baseurl = None
@@ -12,12 +12,13 @@ class WebScraper:
 
     def classifyImport(self, packagename: str):
         try:
-            #TEST
-            page = urllib3.urlopen('http://www.google.com/')
-            soup = BeautifulSoup(page)
-
-            x = soup.body.find('div', attrs={'class': 'container'}).text
-            #
+            page = urllib.request.urlopen(self.baseurl + packagename)
+            soup = BeautifulSoup(page, features="html.parser")
+            readme = soup.find(id="readme").text
+            readme = readme.lower()
+            if ("node.js" in readme):
+                return "backend"
+            return "frontend"
         except ValueError:
             print(ValueError)
         return None

@@ -18,3 +18,8 @@ https://developer.atlassian.com/bitbucket/api/2/reference/meta/filtering
 Vuole una Token API OAuth
 
 Fonte di repository Bitbucket: https://bitbucket.org/repo/all
+
+
+Sto trovando difficoltà a testare l'efficacia di quanto implementato:
+
+* getImportsJAVASCRIPT call "come funzionano gli import e require in JavaScript?"

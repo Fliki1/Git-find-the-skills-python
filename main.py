@@ -76,7 +76,7 @@ if __name__ == '__main__':
     #analyzer.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
 
     socialname = getSocialName(urlOrPath)
-    print("socialname", socialname)
+    print("socialname: ", socialname)
     orginalDev = analyzer.getDevelopers()
 
     # Removing duplicate users. Primary key = email
@@ -113,7 +113,7 @@ if __name__ == '__main__':
             ciao = list(developers.keys())
             firstDev = developers.get(ciao[0])
             for cat in firstDev.getKeyPoints(): # ogni categoria extra?
-                csv_headers.append(cat+ "%")
+                csv_headers.append(cat + "%")
 
             singleline= {}
 
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                     singleline[csv_headers[8]] = " " if (i.getCreated_at() == None) else i.getCreated_at() # CreatedAt
                     singleline[csv_headers[9]] = i.commit  # Commits
 
-                    print("total: ",total)
+                    #print("total: ",total)
 
                     # Percentuali: frontend%,writer%,backend%,android%,facebook%...
                     for index, cat in enumerate(i.getKeyPoints()):
