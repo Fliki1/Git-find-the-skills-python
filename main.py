@@ -199,12 +199,11 @@ if __name__ == '__main__':
         print(outputData)
         # Save Data
         try:
+            with open("html/js/git_data.js", 'a') as f:
+                for data in outputData:
+                    f.write(data)
 
-            """try (FileWriter file = new FileWriter("html/js/git_data.js")) {
-            file.write("data = " + outputData.toString());
-            file.flush();
-
-            zipFolder(Paths.get("html"), Paths.get("./" + filename + ".zip" ));"""
+            #zipFolder(Paths.get("html"), Paths.get("./" + filename + ".zip" ));"""
 
         except ValueError:
             print(ValueError)
