@@ -6,7 +6,7 @@ from pydriller import Repository
 
 class DevelopersVisitor:
 
-    def __init__(self, CONFIG: configparser):
+    def __init__(self, CONFIG: configparser): # ok
         self.CONFIG = CONFIG
         self.developers = {}        # str, Developer
         self.fileExstensions = {}   # str, str[]
@@ -61,14 +61,14 @@ class DevelopersVisitor:
         imports = []
         for line in lines:
             if line.startswith("import") and len(line.split(".")) > 1:    # import java.awt.BorderLayout;
-                print("in: getImportsJava")
-                print("line: ", line)
-                print("line.startswith('import')", line.startswith("import"))
-                print("len(line.split('.') > 1", len(line.split("."))>1)
+                #print("in: getImportsJava")
+                #print("line: ", line)
+                #print("line.startswith('import')", line.startswith("import"))
+                #print("len(line.split('.') > 1", len(line.split("."))>1)
                 # TODO: ho trovato casi del tipo import static com.google.common.collect.Multimaps.*;
                 imports.append((line.split(".")[0].replace("import", "").replace("static", "") + "." + line.split(".")[1]).replace(";+$", "").strip())
-                print("=========================================")
-        print("ritorna: ", imports)
+                #print("=========================================")
+        #print("ritorna: ", imports)
         return imports  # NON è ordinato come in java credo
 
     """ https://developer.mozilla.org/it/docs/Web/JavaScript/Reference/Statements/import
@@ -88,19 +88,19 @@ class DevelopersVisitor:
         imports = []
         for line in lines:
             if (line.strip().startswith("import") or line.strip().startswith("require")) and not "/" in line:
-                print("in: getImportsJAVASCRIPT")
-                print("line: ", line)
-                print("(line.strip().startswith('import')", (line.strip().startswith("import")))
-                print("line.strip().startswith('require')", line.strip().startswith("require"))
-                print("not / in line")
+                #print("in: getImportsJAVASCRIPT")
+                #print("line: ", line)
+                #print("(line.strip().startswith('import')", (line.strip().startswith("import")))
+                #print("line.strip().startswith('require')", line.strip().startswith("require"))
+                #print("not / in line")
                 p = re.compile(r"\"([^\"]*)\"")
-                print(p)
+                #print(p)
                 m = p.match(line.replace("'", "\""))
-                print("m", m)
+                #print("m", m)
                 if m:   # In actual programs, the most common style is to store the match object in a variable, and then check if it was None
                     for i in m: # for i, c in enumerate(m): ----> group(i)? oppure finditer() e for su di esso
                         imports.append(m.group(1))
-                print("=========================================")
+                #print("=========================================")
         return imports
 
     def updatePoint(self, dev: Developer, mod):
@@ -185,14 +185,14 @@ class DevelopersVisitor:
                                      Assign 1 point * modification/same_category (example: 1000/2) at category android 
                                      and database 
                                 """
-                                print(categoryFile)
+                                #print(categoryFile)
                                 massimo = max(categoryFile.values())
-                                print(massimo)
+                                #print(massimo)
                                 maxKeys = []
                                 for entry in categoryFile:
                                     if categoryFile[entry] == massimo:
                                         maxKeys.append(entry)
-                                print(maxKeys)
+                                #print(maxKeys)
                                 if len(maxKeys) == 1:
                                     dev.editPoints(maxKeys[0], (1 if mod.added_lines == 0 else mod.added_lines))
                                 else:
@@ -208,12 +208,15 @@ class DevelopersVisitor:
         for commit in Repository(path_to_repo=url, only_no_merge=True).traverse_commits():
             # Check if the dic contains already the developer (by name), else create a new instance of Developer.
             contains = commit.author.name in self.developers.keys()
+
             if not contains:
                 newDev = Developer.Developer(commit.author.name, commit.author.email)
                 newDev.initExtraCategory(self.CONFIG)
                 self.developers[commit.author.name] = newDev
             dev = self.developers.get(commit.author.name)
-            dev.commit +=1
+            dev.commit += 1
 
             for mod in commit.modified_files:
+                # print(commit.hash)
+                # print(commit.msg)
                 self.updatePoint(dev, mod)

@@ -66,7 +66,7 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
         socialscaper = GitSocialScraper.GitSocialScraper(socialname)
         try:
             socialinfo = socialscaper.getInfo(self.email)
-            print("email: ",self.email)
+            print("email: ", self.email)
             if socialinfo != None:
                 self.setId(socialinfo.get("id"))
                 self.setUsername(socialinfo.get("username"))
@@ -75,6 +75,8 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
                 self.setLocation(socialinfo.get("location"))
                 self.setBio(socialinfo.get("bio"))
                 self.setCreated_at(socialinfo.get("created_at"))
+            else:
+                print("No socialinfo detected for: ", self.email)
         except ValueError:
             print(ValueError)
 

@@ -4,7 +4,7 @@ import csv
 import time
 from datetime import datetime
 import json
-import os
+import os, zipfile
 from src import DevelopersVisitor
 
 CONFIG = configparser.RawConfigParser()
@@ -19,7 +19,7 @@ def validatePropertiesSkills():
             if CONFIG.get(section, key) is None or CONFIG.get(section, key) == "":  # non ci sono campi
                 isValid = False
                 print("Please insert a valid value for " + key + " in Config.properties file.")
-            elif len(CONFIG.get(section, key).split(';')) == 0:                     # non ci sono campi
+            elif key in ["backend", "frontend", "writer", "undefined"] and len(CONFIG.get(section, key).split(';')) == 0:       # almeno 1 valore presente
                 isValid = False
                 print("Please insert a valid value for " + key + " in Config.properties file.")
     return isValid
@@ -30,6 +30,7 @@ def isRemote(url:str):
     return False
 
 def getSocialName(urlOrPath: str):
+    """ return the domain of repository: github/gitlab/... """
     if isRemote(urlOrPath):
         urlNoProtocol = urlOrPath.replace("www", "").replace("https://", "").replace("http://","")
         replace = urlNoProtocol.replace(".", "/")   # per splittare anche github.com/... --> github/com/...
@@ -59,7 +60,13 @@ def getRepoName(url: str):
     splitted = url.split("/")
     return splitted[ len(splitted)-1 ]
 
-
+def zip_directory(folder_path, zip_path):
+    with zipfile.ZipFile(zip_path, mode='w') as zipf:
+        len_dir_path = len(folder_path)
+        for root, _, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                zipf.write(file_path, file_path[len_dir_path:])
 
 if __name__ == '__main__':
     try:
@@ -67,54 +74,55 @@ if __name__ == '__main__':
     except ValueError:
         print(ValueError)
 
-    if validatePropertiesSkills() == False:     # ConfigFile.properties: wrong or empty fields
+    if validatePropertiesSkills() == False:     # ConfigFile.properties: empty fields #ok
         sys.exit(0)
 
-    #TODO: start the metric
+    # Java execute()
     analyzer = DevelopersVisitor.DevelopersVisitor(CONFIG)
-    urlOrPath = CONFIG["RepositorySection"]["repository"]
+    urlOrPath = CONFIG["RepositorySection"]["repository"]   # ok
     analyzer.process(urlOrPath)
-    #analyzer.process('https://github.com/devopstrainingblr/Maven-Java-Project.git')
 
     socialname = getSocialName(urlOrPath)
-    print("socialname: ", socialname)
     orginalDev = analyzer.getDevelopers()
+    for a in orginalDev.keys():
+        print(a, orginalDev[a].email)
 
     # Removing duplicate users. Primary key = email
     developers = {}
-    for i in orginalDev.values():
+    for i in orginalDev.values():   # for all dev in repo
         dev = None
-        for j in developers.values():
+        for j in developers.values():   # check if already in list
             if j.email == i.email:
                 dev = j
-        if dev == None:
+        if dev == None:                 # new dev in list
             developers[i.name] = i
-        else:
+        else:                           # it's a double: 2 dev with same email and different username
             print("Merge points/commit for: " + i.name + " , " + dev.name )
-            for cat in dev.getKeyPoints():
+            for cat in dev.getKeyPoints():  # unione delle categorie di dev.cat + i.cat corrente
                 dev.editPoints(cat, i.getPoints(cat))
             dev.commit += i.commit
 
     print("Start scraping social info for: " + str(len(developers)) + " developers.")
-    max_commit = 0
+    max_commit = 0      # max commit of the "best" dev
     for i in developers.values():
         if i.commit > max_commit:
             max_commit = i.commit
         i.initSocialInfo(socialname)
-        time.sleep(15)  # GitHub Error: Authenticated requests get a higher rate limit. Check out the documentation for more details...
+        time.sleep(15)
+        # To handle GitHub Error: Authenticated requests get a higher rate limit. Check out the documentation for more details...
 
-    now = datetime.now() #  2021-03-24 16:48:05.591
+    now = datetime.now()    #  2021-03-24 16:48:05.591
     timestamp = now.strftime("%m-%d-%Y_%H:%M:%S")
-    filename = getRepoName(urlOrPath) +"_"+ timestamp
+    filename = getRepoName(urlOrPath) + "_" + timestamp
 
     if CONFIG["OutputSection"]["export_as"] == "csv":
         try:
             csv_headers = ["Name", "Email", "SocialID", "SocialUsername", "AvatarURL", "WebSite", "Location", "Bio", "CreatedAt", "Commits"]
-            #heading = "Name;Email;SocialID;SocialUsername;AvatarURL;WebSite;Location;Bio;CreatedAt;Commits;"
-            ciao = list(developers.keys())
-            firstDev = developers.get(ciao[0])
-            for cat in firstDev.getKeyPoints(): # ogni categoria extra?
-                csv_headers.append(cat + "%")
+            first = list(developers.keys())  # per prendere il primo dev_key element sotto formato di lista
+            firstDev = developers.get(first[0])
+            for cat in firstDev.getKeyPoints(): # recupero le cat effettivamente presenti
+                print(cat)
+                csv_headers.append(cat + "%")#TODO: perché non ci sono tutte le categorie specificate nel config manca undefined e java_fe
 
             singleline= {}
 
@@ -199,11 +207,10 @@ if __name__ == '__main__':
         print(outputData)
         # Save Data
         try:
-            with open("html/js/git_data.js", 'a') as f:
+            with open("html/js/git_data.js", 'w') as f:
                 for data in outputData:
                     f.write(data)
-
-            #zipFolder(Paths.get("html"), Paths.get("./" + filename + ".zip" ));"""
+            zip_directory("./html", "./" + filename + ".zip")
 
         except ValueError:
             print(ValueError)
@@ -214,8 +221,6 @@ if __name__ == '__main__':
 
     print("this is the end")
     del analyzer
-
-
 
 
 
