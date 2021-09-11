@@ -118,6 +118,16 @@ Es: android, facebook, backend, writer, frontend
 
 perché non tutte?
 
+Nota ❗ <span style="color:OrangeRed"> Analizzando i risultati ottenuti per l'analisi
+delle singole categorie ho scoperto che nella versione JAVA i conteggi non sono
+del tutto corretti.
+In corrispondenza del `commit fca941c046f81e39e30d380983bd421912a9094d` Java riporta un
+incremento della categoria "frontend" di 0 che per costruzione diventa pari a 1.
+Seguendo il commit segnalato invece si può ben vedere come la modifica effettuata incrementa
+il numero di linee aggiunte di 5923. Così come le successive modifiche di 10 e 5905...
+
+![plot](Schermata%20da%202021-09-12%2000-58-45.png)
+
 
 ### 3. DevelopersVisitor
 DevelopersVisitor classe che gestisce la metrica, prende come input

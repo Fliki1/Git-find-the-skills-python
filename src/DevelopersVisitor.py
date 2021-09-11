@@ -104,18 +104,29 @@ class DevelopersVisitor:
         return imports
 
     def updatePoint(self, dev: Developer, mod):
+        #print(dev.email)
         for i in self.fileExstensions.keys():
             if i != "undefined":
                 if self.checkIfFileHasExtension(mod.filename, self.fileExstensions.get(i)):
+                    #print(i + " ha " + str(dev.getPoints(i)))
+                    #print(i, mod.filename, self.fileExstensions.get(i))
+                    #print(mod.filename, mod.deleted_lines, mod.added_lines)
                     dev.editPoints(i, (1 if mod.added_lines == 0 else mod.added_lines))
+                    #print(i + " ha " + str(dev.getPoints(i)))
             else:
                 for ext in self.fileExstensions.get(i):
                     if mod.filename.endswith(ext):  # Modifica effettuata su un tag di studio
                         if ext == "php":
                             if self.hasHTMLTags(mod.source_code):
+                                #print("frontend" + " ha " + str(dev.getPoints(i)))
+                                #print(i, mod.filename, mod.source_code, self.hasHTMLTags(mod.source_code))
                                 dev.editPoints("frontend", (1 if mod.added_lines == 0 else mod.added_lines))
+                                #print("frontend" + " ha " + str(dev.getPoints(i)))
+
                             else:
+                                #print(i, mod.filename, mod.source_code, self.hasHTMLTags(mod.source_code))
                                 dev.editPoints("backend", (1 if mod.added_lines == 0 else mod.added_lines))
+                                #print("backend" + " ha " + str(dev.getPoints(i)))
                         elif ext == "java" or ext == "js":
                             imports = []
                             additions = self.getOnlyAdditions(mod)
@@ -171,9 +182,13 @@ class DevelopersVisitor:
 
                             if ext == "js" or len(dev.extraCategory) == 0: # Standard method for js file or java with default category
                                 if hasBackendLib == False:
+                                    #print("hasBackendLib ", hasBackendLib)
                                     dev.editPoints("frontend", (1 if mod.added_lines == 0 else mod.added_lines))
+                                    #print("frontend" + " ha " + str(dev.getPoints(i)))
                                 else:
+                                    #print("hasBackendLib ", hasBackendLib)
                                     dev.editPoints("backend", (1 if mod.added_lines == 0 else mod.added_lines))
+                                    #print("backend" + " ha " + str(dev.getPoints(i)))
                             else:
                                 """
                                      Just do it!
@@ -194,10 +209,13 @@ class DevelopersVisitor:
                                         maxKeys.append(entry)
                                 #print(maxKeys)
                                 if len(maxKeys) == 1:
+                                    #print("maxkey[0] ", maxKeys[0])
                                     dev.editPoints(maxKeys[0], (1 if mod.added_lines == 0 else mod.added_lines))
+                                    #print(maxKeys[0] + " ha " + str(dev.getPoints(i)))
                                 else:
                                     for cat in maxKeys:
                                         dev.editPoints(cat, (1 if mod.added_lines == 0 else round(mod.added_lines/len(maxKeys))))
+                                        #print(cat + " ha " + str(dev.getPoints(i)))
 
 
 

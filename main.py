@@ -121,7 +121,7 @@ if __name__ == '__main__':
             first = list(developers.keys())  # per prendere il primo dev_key element sotto formato di lista
             firstDev = developers.get(first[0])
             for cat in firstDev.getKeyPoints(): # recupero le cat effettivamente presenti
-                print(cat)
+                #print(cat)
                 csv_headers.append(cat + "%")#TODO: perché non ci sono tutte le categorie specificate nel config manca undefined e java_fe
 
             singleline= {}
@@ -135,7 +135,8 @@ if __name__ == '__main__':
                     # calcolo totale cat lavoro effettuato dal singolo dev: 10% writer, 60% facebook, 30% frontend...
                     total = 0
                     for cat in i.getKeyPoints():
-                        total += i.getPoints( cat )
+                        total += i.getPoints(cat)
+
 
                     # riga del csv
                     singleline[csv_headers[0]] = i.name  # Name

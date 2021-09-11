@@ -43,7 +43,7 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
     def initExtraCategory(self, CONFIG: configparser):
         """ salvo in devPoints e extraCategory le categorie extra """
         arrayProps = ["repository", "backend", "frontend", "writer", "undefined", "java_fe", "export_as"]
-        if "repository" not in arrayProps:
+        if "repository" not in arrayProps:  # non ha senso di esistere
             self.devPoints["repository"] = 0
             self.extraCategory.append("repository")
         for key in CONFIG["SkillsSection"]:
@@ -86,11 +86,11 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
 
         total = 0
         for i in self.devPoints.keys():
-            print("Category: " + i + " Points: " + self.devPoints[i])
+            print("Category: " + i + " Points: " + str(self.devPoints[i]))
             total += self.devPoints[i]
         if total != 0:
             for i in self.devPoints.keys():
-                print("Category: " + i + " Percentage: " + str( round(float(self.devPoints[i]*100/total)) ) + "%")
+                print("Category: " + i + " Percentage: " + str(round(float(self.devPoints[i]*100/total))) + "%")
 
     def setId(self, id=None):
         self.id = id
