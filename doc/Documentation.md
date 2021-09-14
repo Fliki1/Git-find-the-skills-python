@@ -62,7 +62,7 @@ export_as:csv
 ### 2. main
 
 La prima cosa da validare è il contenuto di Config.properties.
-Try Catch per verificare se è presente [ConfigFile.properties](../ConfigFile.properties) nella
+Il Try Catch è usato per verificare se è presente [ConfigFile.properties](../ConfigFile.properties) nella
 directory. Un errore verrà stampato altrimenti.
 
 **_validatePropertiesSkills()_**: verifica se i campi principali della 
@@ -73,9 +73,7 @@ lettura di [ConfigFile.properties](../ConfigFile.properties) in CONFIG:
 
 sono presenti all'interno del file .properties.
 Il metodo controlla se il contenuto delle key di riferimento alle sezioni
-non siano vuote: `""` o `None`
-
-e altresì controlla se i campi: "backend", "frontend", "writer", "undefined"
+non siano vuote: `""` o `None` e altresì controlla se i campi: "backend", "frontend", "writer", "undefined"
 contengano almeno un valore.
 In base all'esito del metodo (True/False) l'applicazione si ferma: `sys.exit(0)`
 
@@ -90,11 +88,11 @@ Nota ❗ <span style="color:OrangeRed">Una differenza notata con Java nella fase
 Non sono riuscito a capire per quale ragione. Caso d'uso 
 `https://github.com/Tkd-Alex/GIT-Find-The-Skills.git` con attualmente 22 commit
 ne vengono valutati 21 in Python e 20 in Java escludendo un autore.
-Evita un: Bump jsoup from 1.11.3 to 1.14.2 in /gittocv effettuato proprio 
-da: Signed-off-by: dependabot[bot] <support@github.com> che ne aggiorna le dipendenze.</span>.
+Evita un: `Bump jsoup from 1.11.3 to 1.14.2 in /gittocv Signed-off-by: dependabot[bot] <support@github.com>` 
+che ne aggiorna le dipendenze.</span>
 
 **_getSocialName(urlorPath)_**: in base al tipo di repository stabilito da 
-urlorPath(se remoto o locare) determina e ritorna il dominio del repository
+urlorPath (se remoto o locare) determina e ritorna il dominio del repository
 di lavoro: github, gitlab..
 
 Una volta ottenuto la lista dei developers, si procede a verificare ed eliminare
@@ -104,17 +102,17 @@ facendo un merge dei valori delle loro categorie associate e del numero di commi
 effettuati.
 
 _max_commit_ rappresenta il numero di commit massimo raggiunto tra tutti i developers
-servirà a calcolare un rate in stelle per determinare un andamamento ed effort
-tra gli sviluppatori.
+Servirà, se si sceglie il formato html, a calcolare un rate in stelle per determinare 
+un andamento ed effort tra tutti gli sviluppatori che hanno collaborato nel progetto.
 Contemporaneamente **_initSocialInfo(socialname)_**: determina e salva le informazioni
 social reperibili dall'developer di turno: 'id', 'username', 'avatar_url', 'website', 
 'location', 'bio', 'created_at'.
 
-Se è stato specificato di esportare i dati nel formato csv.
+Se è stato specificato di esportare i dati nel formato **csv**.
 Si determinano le categorie effettivamente trovate nel repository,
 prendendo le info di un developer (il primo). 
 Es: android, facebook, backend, writer, frontend
-(rispetto al totale delle categorie specificate: java_fe, undefined, )
+(vengono trattati diversamente: java_fe, undefined)
 
 perché non tutte?
 
@@ -125,9 +123,21 @@ In corrispondenza del `commit fca941c046f81e39e30d380983bd421912a9094d` Java rip
 incremento della categoria "frontend" di 0 che per costruzione diventa pari a 1.
 Seguendo il commit segnalato invece si può ben vedere come la modifica effettuata incrementa
 il numero di linee aggiunte di 5923. Così come le successive modifiche di 10 e 5905...
-
+</span>
 ![plot](Schermata%20da%202021-09-12%2000-58-45.png)
+Su un file.csv nominato con il nome del repository e un timestamp si salva il tutto.
+![plot](Immagine%202021-09-13%20135309.png)
 
+Se è stato specificato di esportare i dati nel formato **html**.
+Si genera un JSON contenente le stesse informazioni generabili nel formato csv.
+A differenza di Java, in Python i campi non sono ordinati.
+
+Per ciascun developer si recuperano le sue bio info, la sua percentuale di effort per 
+categoria specificata e uno star rate per indicare sul totale dei commit effettuati
+quanto è stato il suo contributo nel repository.
+
+Il tutto viene salvato in uno zip file contenenti anche altri elementi per una 
+rappresentazione web degli esiti ottenuti.
 
 ### 3. DevelopersVisitor
 DevelopersVisitor classe che gestisce la metrica, prende come input

@@ -8,7 +8,9 @@ import os, zipfile
 from src import DevelopersVisitor
 
 CONFIG = configparser.RawConfigParser()
-#CONFIG.read('ConfigFile.properties')
+#https://github.com/devopstrainingblr/awesome-docker.git
+#https://github.com/devopstrainingblr/Maven-Java-Project.git
+
 
 
 def validatePropertiesSkills():
@@ -85,7 +87,7 @@ if __name__ == '__main__':
     socialname = getSocialName(urlOrPath)
     orginalDev = analyzer.getDevelopers()
     for a in orginalDev.keys():
-        print(a, orginalDev[a].email)
+        print(a,":", orginalDev[a].email)
 
     # Removing duplicate users. Primary key = email
     developers = {}
@@ -115,6 +117,7 @@ if __name__ == '__main__':
     timestamp = now.strftime("%m-%d-%Y_%H:%M:%S")
     filename = getRepoName(urlOrPath) + "_" + timestamp
 
+    # CSV
     if CONFIG["OutputSection"]["export_as"] == "csv":
         try:
             csv_headers = ["Name", "Email", "SocialID", "SocialUsername", "AvatarURL", "WebSite", "Location", "Bio", "CreatedAt", "Commits"]
@@ -122,7 +125,8 @@ if __name__ == '__main__':
             firstDev = developers.get(first[0])
             for cat in firstDev.getKeyPoints(): # recupero le cat effettivamente presenti
                 #print(cat)
-                csv_headers.append(cat + "%")#TODO: perché non ci sono tutte le categorie specificate nel config manca undefined e java_fe
+                csv_headers.append(cat + "%")
+                #TODO: perché non ci sono tutte le categorie specificate nel config manca undefined e java_fe
 
             singleline= {}
 
@@ -137,7 +141,6 @@ if __name__ == '__main__':
                     for cat in i.getKeyPoints():
                         total += i.getPoints(cat)
 
-
                     # riga del csv
                     singleline[csv_headers[0]] = i.name  # Name
                     singleline[csv_headers[1]] = i.email  # Email
@@ -150,20 +153,18 @@ if __name__ == '__main__':
                     singleline[csv_headers[8]] = " " if (i.getCreated_at() == None) else i.getCreated_at() # CreatedAt
                     singleline[csv_headers[9]] = i.commit  # Commits
 
-                    #print("total: ",total)
-
                     # Percentuali: frontend%,writer%,backend%,android%,facebook%...
                     for index, cat in enumerate(i.getKeyPoints()):
                         if total !=0:
                             singleline[csv_headers[10 + index]] = round(float(i.getPoints( cat )*100/total))   # cat%
-                        else:   # Errore: che dev non ha nulla di specifico per quelle categorie specificate
+                        else:   # Errore: dev che non ha fatto nulla su tutte quelle categorie
                             singleline[csv_headers[10 + index]] = 0  # 0%
-
-                    writer.writerow(singleline)
-
+                    writer.writerow(singleline) # scrittura
             print('Csv generato')
         except ValueError:
             print(ValueError)
+
+    # HTML
     elif CONFIG["OutputSection"]["export_as"] == "html":
         outputData = [] #JSONArray
         for i in developers.values():
@@ -198,29 +199,36 @@ if __name__ == '__main__':
 
             skills = {} #JSONArray
             for cat in i.getKeyPoints():
-                skills[cat] = round(float(i.getPoints(cat)*100/total))
-            singleDeveloper["skills"] = skills
+                if total != 0:              # non era gestito: error divisione per 0
+                    skills[cat] = round(float(i.getPoints(cat)*100/total))
+                else:                       # non era gestito
+                    skills[cat] = 0
+            singleDeveloper["skills"] = [skills]
 
-            # conversione JSON
+            # conversione dict-JSON
             jsonSingleDeveloper = json.dumps(singleDeveloper)
             outputData.append(jsonSingleDeveloper)
 
-        print(outputData)
+        #print(outputData)
+
         # Save Data
         try:
             with open("html/js/git_data.js", 'w') as f:
-                for data in outputData:
-                    f.write(data)
+                for index, data in enumerate(outputData):
+                    if index == 0:
+                        f.write("data = ["+ data + ",")
+                    elif index == len(outputData)-1:
+                        f.write(data+"]")
+                    else:
+                        f.write(data+",")
             zip_directory("./html", "./" + filename + ".zip")
 
         except ValueError:
             print(ValueError)
 
-
     else: print("Not valid output provided. Output supported: csv or html")
 
-
-    print("this is the end")
+    print("End: Git-find-the skills")
     del analyzer
 
 
