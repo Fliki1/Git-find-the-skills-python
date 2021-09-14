@@ -174,6 +174,7 @@ if __name__ == '__main__':
             for cat in i.getKeyPoints():
                 total += i.getPoints(cat)
 
+            # Dev info
             singleDeveloper["name"] = i.name
             singleDeveloper["email"] = i.email
             singleDeveloper["id"] = (" " if (i.getId() == None) else i.getId())
@@ -197,19 +198,18 @@ if __name__ == '__main__':
             elif ( i.commit > ((max_commit / 5) * 4) ):
                 singleDeveloper["commit_star"] = 5
 
-            skills = {} #JSONArray
+            # Skills
+            skills = []
             for cat in i.getKeyPoints():
-                if total != 0:              # non era gestito: error divisione per 0
-                    skills[cat] = round(float(i.getPoints(cat)*100/total))
-                else:                       # non era gestito
-                    skills[cat] = 0
-            singleDeveloper["skills"] = [skills]
+                if total != 0:  # non era gestito: error divisione per 0
+                    skills.append({cat:round(float(i.getPoints(cat)*100/total))})
+                else:           # non era gestito
+                    skills.append({cat:0})
+            singleDeveloper["skills"] = skills
 
             # conversione dict-JSON
             jsonSingleDeveloper = json.dumps(singleDeveloper)
             outputData.append(jsonSingleDeveloper)
-
-        #print(outputData)
 
         # Save Data
         try:
