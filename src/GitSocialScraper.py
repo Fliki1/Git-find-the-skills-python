@@ -7,9 +7,9 @@ class GitSocialScraper:
         self.socialname = socialname
 
     def makeRequest(self, url_string):
-        """ Get dell'url_string, return la JSON response or None """
+        """ Get of url_string, return a JSON response or None """
         myResponse = {}
-        con = requests.get(url_string, timeout=10)  # test riportano una pronta risposta
+        con = requests.get(url_string, timeout=10)  # timer di risposta di 10 secondi else None
         if con.ok:
             myResponse = con.json()
             return myResponse
@@ -22,7 +22,7 @@ class GitSocialScraper:
                 #1 - Search user by email
                 user_result = self.makeRequest(f"https://api.github.com/search/users?q={email}+in:email")
 
-                """ JSON Vuota
+                """ Modello JSON Vuota
                     {
                       "total_count": 0,
                       "incomplete_results": false,
@@ -78,7 +78,31 @@ class GitSocialScraper:
             """
             return None
         elif self.socialname == "gitlab":
-            return None     # auth required for GitLab :(
+            """ Anche qui richiede una autorizzazione, possibile gestione della chiamata come sotto """
+            fullinfo = {}
+            try:
+                #1 - Search user by email
+                fullinfo = self.makeRequest(f"https://gitlab.com/api/v4/users?email={email}")
+                                            # https://gitlab.com/api/v4/users?search=name      /users?username=:username
+                #print(fullinfo)-> None
+                if fullinfo != None:    # auth required for GitLab :(
+                    info = {}
+                    info["id"] = fullinfo["account_id"]
+                    info["username"] = fullinfo["nickname"]
+                    print(info)
+                    links = fullinfo['links']
+                    avatarl_url = links['avatar']['href']
+                    info["avatar_url"] = avatarl_url
+
+                    info["website"] = None
+                    info["location"] = None
+                    info["bio"] = None
+                    info["created_at"] = fullinfo["created_on"]
+                    print(info)
+                    return info
+                return None
+            except ValueError:
+                print(ValueError)
         return None
 
     """ Qualcosa del tipo: 

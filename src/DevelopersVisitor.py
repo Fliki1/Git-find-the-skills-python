@@ -18,8 +18,6 @@ class DevelopersVisitor:
 
         self.HTML_PATTERN = r"<(\"[^\"]*\"|'[^']*'|[^'\">])*>" # changed
         self.pattern = re.compile(self.HTML_PATTERN)
-        # TODO: controllare se [ di apertura sono leciti: leggo che
-        #  In Python you don't need to escape any nested [ but you do need to do that in Java.
 
 
     def getDevelopers(self):
@@ -60,7 +58,7 @@ class DevelopersVisitor:
         """ gestione degli import Java type """
         imports = []
         for line in lines:
-            if line.startswith("import") and len(line.split(".")) > 1:    # import java.awt.BorderLayout;
+            if line.startswith("import") and len(line.split(".")) > 1:    # es. import java.awt.BorderLayout;
                 #print("in: getImportsJava")
                 #print("line: ", line)
                 #print("line.startswith('import')", line.startswith("import"))
