@@ -225,7 +225,7 @@ class DevelopersVisitor:
             # Check if the dic contains already the developer (by name), else create a new instance of Developer.
             contains = commit.author.name in self.developers.keys()
 
-            if not contains:
+            if not contains:    # New Dev
                 newDev = Developer.Developer(commit.author.name, commit.author.email)
                 newDev.initExtraCategory(self.CONFIG)
                 self.developers[commit.author.name] = newDev

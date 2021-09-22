@@ -1,10 +1,10 @@
 # Code documentation Git-find-the-skills-python
 
 Il progetto ha come obiettivo quello di convertire il codice già
-realizzato dal Alessandro Maggio in Java ☕ in Python 🐍
+realizzato dal Alessandro Maggio da Java ☕ in Python 🐍
 
 Di seguito ne riporto tutte le scelte implementative e struttura
-del codice implementato.
+del codice.
 
 ### 1 Config.properties
 Come fase iniziale del progetto viene preso in considerazione
@@ -28,6 +28,8 @@ _OutputSection_ corrispondenti ai distinti campi.
 script le estensioni come .js, .java e .php vengono trattate in maniera adeguata e
 categorizzate correttamente pur essendo undefined
 - **java_fe**: lista di packages Java dedicate al frontend
+- **...**: ulteriori categorie possono essere inserite per il linguaggio Java semplicemente
+scrivendo nomecat=pkg1;pkg2;pkg3
 #### OutputSection
 - **export_as**: indica la tipologia di output desiderata: csv o _html_
 <!---
@@ -36,12 +38,9 @@ file index.html e i relativi .js, .css in modo tale da
 avere una rappresentazione "grafica" dell’analisi effettuata.
 Se si sceglie .csv verrà realizzato un file con la medesima estensione.
 -->
-#### Extra??
-- **...**: ulteriori categorie possono essere inserite per il linguaggio Java semplicemente
-scrivendo nomecat=pkg1;pkg2;pkg3
  
 >Nota: utilizzare il carattere **;** per differenziare le varie librerie/estensioni.
-##### Esempio del file Config.properties
+##### Esempio di file Config.properties
 ```
 [RepositorySection]
 repository=https://github.com/Tkd-Alex/GIT-Find-The-Skills.git
@@ -62,7 +61,7 @@ export_as:csv
 ### 2. main
 
 La prima cosa da validare è il contenuto di Config.properties.
-Il Try Catch è usato per verificare se è presente [ConfigFile.properties](../ConfigFile.properties) nella
+Un Try Catch è usato per verificare se è presente [ConfigFile.properties](../ConfigFile.properties) nella
 directory. Un errore verrà stampato altrimenti.
 
 **_validatePropertiesSkills()_**: verifica se i campi principali della 
@@ -84,7 +83,7 @@ esegue direttamente il metodo **_process_**
 
 L'analisi del repository viene effettuata escludendo i Merge commit.
 
-Nota ❗ <span style="color:OrangeRed">Una differenza notata con Java nella fase di testing: Java non considera certi commit.
+❗ <span style="color:OrangeRed">Una differenza notata con Java nella fase di testing: Java non considera certi commit.
 Non sono riuscito a capire per quale ragione. Caso d'uso 
 `https://github.com/Tkd-Alex/GIT-Find-The-Skills.git` con attualmente 22 commit
 ne vengono valutati 21 in Python e 20 in Java escludendo un autore.
@@ -101,11 +100,11 @@ dallo stesso user(user.email) con nick diversi(user.name). Si rimuovo i duplicat
 facendo un merge dei valori delle loro categorie associate e del numero di commit
 effettuati.
 
-_max_commit_ rappresenta il numero di commit massimo raggiunto tra tutti i developers
+_max_commit_ rappresenta il numero di commit massimo raggiunto tra tutti i developers.
 Servirà, se si sceglie il formato html, a calcolare un rate in stelle per determinare 
 un andamento ed effort tra tutti gli sviluppatori che hanno collaborato nel progetto.
 Contemporaneamente **_initSocialInfo(socialname)_**: determina e salva le informazioni
-social reperibili dall'developer di turno: 'id', 'username', 'avatar_url', 'website', 
+social reperibili dal developer di turno: 'id', 'username', 'avatar_url', 'website', 
 'location', 'bio', 'created_at'.
 
 Se è stato specificato di esportare i dati nel formato **csv**.
@@ -114,12 +113,10 @@ prendendo le info di un developer (il primo).
 Es: android, facebook, backend, writer, frontend
 (vengono trattati diversamente: java_fe, undefined)
 
-perché non tutte?
-
-Nota ❗ <span style="color:OrangeRed"> Analizzando i risultati ottenuti per l'analisi
+❗ <span style="color:OrangeRed"> Analizzando i risultati ottenuti per l'analisi
 delle singole categorie ho scoperto che nella versione JAVA i conteggi non sono
-del tutto corretti.
-In corrispondenza del `commit fca941c046f81e39e30d380983bd421912a9094d` Java riporta un
+del tutto corretti. Nell'esempio https://github.com/Tkd-Alex/GIT-Find-The-Skills.git
+in corrispondenza del `commit fca941c046f81e39e30d380983bd421912a9094d` Java riporta un
 incremento della categoria "frontend" di 0 che per costruzione diventa pari a 1.
 Seguendo il commit segnalato invece si può ben vedere come la modifica effettuata incrementa
 il numero di linee aggiunte di 5923. Così come le successive modifiche di 10 e 5905...
@@ -129,7 +126,7 @@ Su un file.csv nominato con il nome del repository e un timestamp si salva il tu
 ![plot](Immagine%202021-09-13%20135309.png)
 
 Se è stato specificato di esportare i dati nel formato **html**.
-Si genera un JSON contenente le stesse informazioni generabili nel formato csv.
+Si genera un JSON contenente le stesse informazioni ottenibili nel formato csv.
 A differenza di Java, in Python i campi non sono ordinati.
 
 Per ciascun developer si recuperano le sue bio info, la sua percentuale di effort per 
@@ -137,10 +134,10 @@ categoria specificata e uno star rate per indicare sul totale dei commit effettu
 quanto è stato il suo contributo nel repository.
 
 Il tutto viene salvato in uno zip file contenenti anche altri elementi per una 
-rappresentazione web degli esiti ottenuti.
+rappresentazione web degli esiti ottenuti. (solo su windows a quanto pare)
 
 ### 3. DevelopersVisitor
-DevelopersVisitor classe che gestisce la metrica, prende come input
+[DevelopersVisitor](../src/DevelopersVisitor.py) classe che gestisce la metrica, prende come input
 un riferimento a ConfigFile.properties dal quale ne ricava i parametri settati.
 
 Salva in:
@@ -154,27 +151,39 @@ in lowercase
 > ['javax.swing', 'java.awt', 'com.lowagie', 'org.xml', 'android.view']
 
 **_process(url)_**: Per ciascun commit nel repository si recupera il suo autore. Se non è un
-developer già trattato, viene creato un nuovo Developer di riferimento e
+developer già trattato, viene creato un nuovo [Developer](../src/Developer.py) di riferimento e
 salvato opportunamente incrementando il suo numero di commit effettuati.
 
 **_updatePoint(dev, mod)_**: Parallelamente per ogni modifica presente nello stesso commit si conteggiano 
 e aggiornano il numero di punti del developer. Il conteggio viene effettuato
+verificando la tipologia di file modificato, in base alla sua estensione (sh, html, pdf...), 
 incrementando nella categoria opportuna(backend, frontend, writer, undefined) 
-il numero di righe che sono state aggiunte al file corrispettivo 
-associato in base alla sua estenzione (sh, html, pdf...), +1 se è stato 
+il numero di righe che sono state aggiunte al file, +1 altrimenti se è stato 
 creato il file o non sono stati aggiunte righe di modifica.
-#TODO specificare il suo comportamento e rileggere
+
+Lo studio delle categorie "undefined" cerca di comprendere se i file con estensione
+php, java e js possiedano elementi per poter stabilire a quale delle due categorie backend o frontend
+appartengano. L'analisi viene effettuata approfondendo la tipologia
+di librerie importate nei file, in base a quale classificazione e ambiti di librerie ha 
+importato chi si può dare un'ipotesi sulle capacità dello sviluppatore.
+
+Sempre nelle ExtraCategorie vengono gestite e soppesate il totale dei punteggi per ciascuna 
+di esse, gestendo anche un eventuale pari merito tra più categorie suddividendone il peso su queste ultime.
 
 ### 4. Developers
-#TODO completare
+Developers rappresenta una struttura che salva tutte le informazioni di un Autore del commit.
+
+**_initExtraCategory(CONFIG)_**: permette di salvare le categorie extra a quelli basilari (frontend, writer, backend)
+
+**_initSocialInfo(socialname)_**: salva nella struttura dati le informazioni social a partire dall'email
 
 ### 5. WebScraper 
 Per la gestione dei package di Java e JavaScript, ci si affida al sito https://www.npmjs.com/package/
 il quale specificando il nome del package ne darà tutte le informazioni utili.
 
-Per leggere il sito: ci si affida a un HTML Parser `BeautifulSoup`.
+Per leggere il sito: ci si affida ad un HTML Parser `BeautifulSoup`.
 
-Dalla lettura del paragrafo "readme" del sito, se ne contiene la parola: _node.js_, il
+Dalla lettura del paragrafo "readme" del sito, se contiene la parola: _node.js_, il
 package in questione viene trattato come **backend** altrimenti **frontend**.
 
 
@@ -202,6 +211,10 @@ L'esito riporta le informazioni dello sviluppatore in formato JSON, None altrime
 * created_at
 
 Informazioni utilizzati nell'esito degli effort di ciascuno developer.
+(Nelle successive ho raccolto una sintesi dei passaggi effettuttati e
+dalle documentazioni non ottenendo i risultati sperati: richiedono
+l'autorizzazione con token del proprietario stesso)
+
 #### GitHub
 Ricerca le informazioni partendo dall'email dell'utente. Solo una volta, se
 l'esito è non nullo, approfondisce ulteriormente le ricerche cercando per id.
@@ -223,6 +236,9 @@ esiste il "project token owner" per avere più informazioni a riguardo di quel
 specifico repository. L'authkey è un personal access token per autenticarsi 
 con GitLab associato all'utente del repository di studio.
 
+Le chiamate requests relative alle informazioni vengono riconosciute (200 status)
+ma riportano esito nullo perché non si è autorizzati.
+
 #### Bitbucket
 > Credenziali: apirepository67@gmail.com Tantoper
 
@@ -238,8 +254,6 @@ per poter invocare certe richieste.
 [REST API 1.0 Resources Provided By: Bitbucket Server](https://docs.atlassian.com/bitbucket-server/rest/5.16.0/bitbucket-rest.html)
 
 [Bitbucket API: Authentication methods](https://developer.atlassian.com/bitbucket/api/2/reference/meta/authentication)
-
-Account Bitbucket creato con Google
 
 ##### Come creare un Access Token
 Bisogna creare un repository su Bitbucket, entrare nei settings del repository,
@@ -287,3 +301,7 @@ Note: [stack1](https://stackoverflow.com/questions/44832338/bitbucket-api-return
 [stack3](https://stackoverflow.com/questions/66832797/how-to-authenticate-to-bitbucket-cloud-apis-and-then-use-them-post-authenticatio)
 [POSTpythondoc](https://docs.python-requests.org/en/master/user/quickstart/#more-complicated-post-requests)
 [Youtube](https://www.youtube.com/watch?v=rb_SZE6Sh20&ab_channel=TechJam) (usa Postman per le request call)
+
+Non sono riuscito a generare un auth token dovuto a cattiva 
+mia gestione delle chiamate GET, ma questo non risolve il fatto che 
+si necessita comunque del token corrispettivo al repository sotto analisi. (anche qui)

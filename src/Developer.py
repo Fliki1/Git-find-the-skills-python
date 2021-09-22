@@ -43,11 +43,11 @@ class Developer:  # Committer: chi fa il commit o Author: autore delle modifiche
     def initExtraCategory(self, CONFIG: configparser):
         """ salvo in devPoints e extraCategory le categorie extra """
         arrayProps = ["repository", "backend", "frontend", "writer", "undefined", "java_fe", "export_as"]
-        if "repository" not in arrayProps:  # non ha senso di esistere
+        if "repository" not in arrayProps:  # Controllo Java inutile - non ha senso di esistere
             self.devPoints["repository"] = 0
             self.extraCategory.append("repository")
         for key in CONFIG["SkillsSection"]:
-            if key not in arrayProps:
+            if key not in arrayProps:   # generazione delle categorie extra
                 self.devPoints[key] = 0
                 self.extraCategory.append(key)
 
