@@ -9,7 +9,10 @@ class GitSocialScraper:
     def makeRequest(self, url_string):
         """ Get of url_string, return a JSON response or None """
         myResponse = {}
-        con = requests.get(url_string, timeout=10)  # timer di risposta di 10 secondi else None
+        try:
+            con = requests.get(url_string, timeout=15)  # timer di risposta di 10 secondi else None
+        except requests.exceptions.ConnectionError:
+            print("TIMEOUT request")
         if con.ok:
             myResponse = con.json()
             return myResponse

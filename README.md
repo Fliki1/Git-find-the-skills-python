@@ -28,6 +28,9 @@ Sto trovando difficoltà a testare l'efficacia di quanto implementato:
 L'esito in html non è visibile nel mio ambiente Ubuntu, su Windows mi si 
 apre la pagina creata invece.
 
+Requests
+beautifulsoup4
+pydriller
 #### TODO:
 * nella gestione degli import in java ho trovato casi del tipo 
 `import static com.google.common.collect.Multimaps.*;`
