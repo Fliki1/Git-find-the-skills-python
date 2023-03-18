@@ -86,8 +86,9 @@ if __name__ == '__main__':
 
     socialname = getSocialName(urlOrPath)
     orginalDev = analyzer.getDevelopers()
-    for a in orginalDev.keys():
-        print(a,":", orginalDev[a].email)
+    # Lista di sviluppatori
+    #for a in orginalDev.keys():
+    #    print(a,":", orginalDev[a].email)
 
     # Removing duplicate users. Primary key = email
     developers = {}
@@ -106,7 +107,8 @@ if __name__ == '__main__':
 
     print("Start scraping social info for: " + str(len(developers)) + " developers.")
     max_commit = 0      # max commit of the "best" dev
-    for i in developers.values():
+    for ind, i in enumerate(developers.values()):
+        print(str(ind+1)+ " / "+ str(len(developers)))
         if i.commit > max_commit:
             max_commit = i.commit
         i.initSocialInfo(socialname)
