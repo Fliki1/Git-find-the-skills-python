@@ -1,4 +1,6 @@
 # Git-find-the-skills-python
+[![en](https://img.shields.io/badge/lang-en-green)](README.en.md)
+
 Il progetto GIT-Find-The-Skills ha come obiettivo principale
 la classificazione dei committer presenti all’interno di una 
 determinata repository git. Ogni utente può aver collaborato 
@@ -24,11 +26,7 @@ Sto trovando difficoltà a testare l'efficacia di quanto implementato:
 
 * getImportsJAVASCRIPT call "come funzionano gli import e require in JavaScript?"
 
-#### Risultato in Html
-L'esito in html non è visibile nel mio ambiente Ubuntu, su Windows mi si 
-apre la pagina creata invece.
-
-Requests
+### Requests
 beautifulsoup4
 pydriller
 #### TODO:
